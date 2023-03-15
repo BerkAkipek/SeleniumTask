@@ -6,26 +6,35 @@ from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+import unittest
+from pages.HomePage import HomePage
+from pages.LoginPage import LoginPage
 
 
-service_obj = Service("/home/berk/chromedriver/stable/chromedriver")
-driver = webdriver.Chrome(service=service_obj)
+class LoginTest(unittest.TestCase):
 
-# Go to the www.n11.com
-driver.maximize_window()
-driver.get("https://www.n11.com/")
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.driver = webdriver.Chrome(executable_path="/home/berk/chromedriver/stable/chromedriver")
+        cls.driver.implicitly_wait(10)
+        cls.driver.maximize_window()
 
-# Go to hyperlink GirişYap
-driver.find_element(By.LINK_TEXT, "Giriş Yap").click()
+    def test_refresh_password_with_valid_mail(self):
+        driver = self.driver
+        driver.get("https://www.n11.com/")
 
-sleep(1)
+        homePage = HomePage(driver=driver)
+        homePage.click_login()
 
-# Find Refresh password
-driver.find_element(By.ID, 'forgotPassword').click()
-sleep(1)
-driver.find_element(By.XPATH, "//input[@id='forgottenUserEmail']").send_keys("berk.akipek.99@gmail.com")
-driver.find_element(By.XPATH, "//a[@id='sendLinkForPasswordBtn']").click()
+        loginPage = LoginPage(driver=driver)
+        loginPage.click_refresh_password()
+        loginPage.enter_mail_forgotten_password("berk.akipek.99@gmail.com")
+        loginPage.click_send_link_forgotten_password()
+    
 
-sleep(1)
+    def tearDown(self) -> None:
+        print("Test Finished")
 
 
+if __name__ == '__main__':
+    unittest.main()

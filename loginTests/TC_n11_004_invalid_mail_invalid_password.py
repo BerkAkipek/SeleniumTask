@@ -6,23 +6,36 @@ from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+import unittest
+from pages.HomePage import HomePage
+from pages.LoginPage import LoginPage
 
 
-service_obj = Service("/home/berk/chromedriver/stable/chromedriver")
-driver = webdriver.Chrome(service=service_obj)
+class LoginTest(unittest.TestCase):
 
-# Go to the www.n11.com
-driver.maximize_window()
-driver.get("https://www.n11.com/")
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.driver = webdriver.Chrome(executable_path="/home/berk/chromedriver/stable/chromedriver")
+        cls.driver.implicitly_wait(10)
+        cls.driver.maximize_window()
 
-# Go to hyperlink GirişYap
-driver.find_element(By.LINK_TEXT, "Giriş Yap").click()
+    def test_login_with_invalid_mail_and_password(self):
+        driver = self.driver
+        driver.get("https://www.n11.com/")
+        
+        homePage = HomePage(driver=driver)
+        homePage.click_login()
 
-sleep(1)
+        loginPage = LoginPage(driver=driver)
+        loginPage.enter_email("asdfashsfgdfgh")
+        loginPage.enter_password("134679Hello")
+        loginPage.click_login()
+    
 
-# Test vith invalid mail and password
-driver.find_element(By.CSS_SELECTOR, "#email").send_keys("asdfashsfgdfgh")
-driver.find_element(By.CSS_SELECTOR, "#password").send_keys("134679Hello")
-message = driver.find_element(By.XPATH, "//div[contains(text(),'Lütfen geçerli bir e-posta adresi girin.')]").text
+    @classmethod
+    def tearDownClass(self) -> None:
+        print("Test Has Finished")
 
-assert "Lütfen geçerli bir e-posta adresi girin" in message
+
+if __name__ == '__main__':
+    unittest.main()

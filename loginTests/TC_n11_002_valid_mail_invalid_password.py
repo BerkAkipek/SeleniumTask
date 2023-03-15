@@ -6,28 +6,39 @@ from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+import unittest
+from pages.HomePage import HomePage
+from pages.LoginPage import LoginPage
 
 
-service_obj = Service("/home/berk/chromedriver/stable/chromedriver")
-driver = webdriver.Chrome(service=service_obj)
+class LoginTest(unittest.TestCase):
 
-# Go to the www.n11.com
-driver.maximize_window()
-driver.get("https://www.n11.com/")
+    @classmethod
+    def setUpClass(cls):
+        cls.driver = webdriver.Chrome(executable_path="/home/berk/chromedriver/stable/chromedriver")
+        cls.driver.implicitly_wait(10)
+        cls.driver.maximize_window()
+    
 
-# Go to hyperlink GirişYap
-driver.find_element(By.LINK_TEXT, "Giriş Yap").click()
+    def test_login_with_invalid_password(self):
+        driver = self.driver
+        driver.get("https://www.n11.com/")
 
-sleep(1)
+        homePage = HomePage(driver=driver)
+        homePage.click_login()
 
-# Test with valid mail invalid password
-driver.find_element(By.XPATH, "//input[@id='email']").send_keys("berk.akipek.99@gmail.com")
-driver.find_element(By.XPATH, "//input[@id='password']").send_keys("asdasdfasdasdasdasd")
-driver.find_element(By.XPATH, "//div[@id='loginButton']").click()
+        loginPage = LoginPage(driver=driver)
+        loginPage.enter_email("berk.akipek.99@gmail.com")
+        loginPage.enter_password("asdasdfasdasdasdasd")
+        loginPage.click_login()
 
-sleep(1)
+        message = loginPage.return_invalid_password_text()
+        assert "Girilen değer en fazla 15 karakter olmalıdır." in message
 
-message = driver.find_element(By.XPATH, "//div[contains(text(),'Girilen değer en fazla 15 karakter olmalıdır.')]").text
-assert "Girilen değer en fazla 15 karakter olmalıdır." in message
+    @classmethod
+    def tearDownClass(self):
+        print("Test Finished")
 
-sleep(1)
+
+if __name__ == '__main__':
+    unittest.main()

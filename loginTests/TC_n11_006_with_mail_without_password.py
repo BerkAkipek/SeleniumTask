@@ -6,25 +6,38 @@ from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+import unittest
+from pages.HomePage import HomePage
+from pages.LoginPage import LoginPage
 
 
-service_obj = Service("/home/berk/chromedriver/stable/chromedriver")
-driver = webdriver.Chrome(service=service_obj)
+class LoginTest(unittest.TestCase):
 
-# Go to the www.n11.com
-driver.maximize_window()
-driver.get("https://www.n11.com/")
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.driver = webdriver.Chrome(executable_path="/home/berk/chromedriver/stable/chromedriver")
+        cls.driver.implicitly_wait(10)
+        cls.driver.maximize_window()
+    
 
-# Go to hyperlink GirişYap
-driver.find_element(By.LINK_TEXT, "Giriş Yap").click()
+    def test_with_mail_without_password(self):
+        driver = self.driver
+        driver.get("https://www.n11.com/")
 
-sleep(1)
+        homePage = HomePage(driver=driver)
+        homePage.click_login()
 
-# Try to login without a password
-driver.find_element(By.CSS_SELECTOR, "#email").send_keys("example@example.com")
-driver.find_element(By.CSS_SELECTOR, "#loginButton").click()
-message02 = driver.find_element(By.XPATH, "//div[contains(text(),'Bu alanın doldurulması zorunludur.')]").text
+        loginPage = LoginPage(driver=driver)
+        loginPage.enter_email("example@example.com")
+        loginPage.click_login()
 
-assert "Bu alanın doldurulması zorunludur." in message02
+        message = loginPage.return_empty_password_error_text()
+        assert "Bu alanın doldurulması zorunludur." in message
+    
 
-# End Test
+    def tearDown(self) -> None:
+        print("Test Finished")
+
+    
+if __name__ == '__main__':
+    unittest.main()
