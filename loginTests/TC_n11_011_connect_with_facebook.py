@@ -20,12 +20,13 @@ driver.find_element(By.LINK_TEXT, "Giriş Yap").click()
 
 sleep(1)
 
-# Try to login with an invalid password
-driver.find_element(By.CSS_SELECTOR, "#email").send_keys("berk.akipek.96@gmail.com")
-driver.find_element(By.CSS_SELECTOR, "#password").send_keys("ABS11431811asdfghjkl")
-driver.find_element(By.CSS_SELECTOR, "#loginButton").click()
-message03 = driver.find_element(By.XPATH, "//div[contains(text(),'Girilen değer en fazla 15 karakter olmalıdır.')]").text
+# Connect with facebook
+driver.find_element(By.XPATH, "//div[contains(@class,'btnLogin')]").click()
 
-assert "Girilen değer en fazla 15 karakter olmalıdır." in message03
+sleep(2)
 
-# End Test
+driver.find_element(By.XPATH, "//input[@id='pass']").send_keys("berk.akipek.99@gmail.com")
+
+sleep(5)
+
+

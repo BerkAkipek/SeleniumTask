@@ -19,3 +19,13 @@ driver.get("https://www.n11.com/")
 driver.find_element(By.LINK_TEXT, "Giriş Yap").click()
 
 sleep(1)
+
+# Find Refresh password
+driver.find_element(By.ID, 'forgotPassword').click()
+sleep(1)
+driver.find_element(By.XPATH, "//input[@id='forgottenUserEmail']").send_keys("berk.akipek.99@gmail.com")
+driver.find_element(By.XPATH, "//a[@id='sendLinkForPasswordBtn']").click()
+
+sleep(1)
+
+

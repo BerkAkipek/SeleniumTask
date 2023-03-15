@@ -20,9 +20,14 @@ driver.find_element(By.LINK_TEXT, "Giriş Yap").click()
 
 sleep(1)
 
-# Try to login with a valid email and password
-driver.find_element(By.CSS_SELECTOR, "#email").send_keys("berk.akipek.96@gmail.com")
-driver.find_element(By.CSS_SELECTOR, "#password").send_keys("ABS11431811asd")
-driver.find_element(By.CSS_SELECTOR, "#loginButton").click()
+# Find Refresh password
+driver.find_element(By.ID, 'forgotPassword').click()
 
-sleep(2)
+sleep(1)
+
+driver.find_element(By.ID, "sendLinkForPasswordBtn").click()
+message = driver.find_element(By.XPATH, "//div[contains(text(),'Lütfen e-posta adresinizi girin.')]").text
+
+assert "Lütfen e-posta adresinizi girin." in message
+
+sleep(1)

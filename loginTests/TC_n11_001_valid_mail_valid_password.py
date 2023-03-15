@@ -20,11 +20,14 @@ driver.find_element(By.LINK_TEXT, "Giriş Yap").click()
 
 sleep(1)
 
-# Try to login without an email
-driver.find_element(By.CSS_SELECTOR, "#password").send_keys("134679Hello")
-driver.find_element(By.CSS_SELECTOR, "#loginButton").click()
-message01 = driver.find_element(By.XPATH, "//div[contains(text(),'Lütfen e-posta adresinizi girin.')]").text
+# Test with valid mail invalid password
+driver.find_element(By.XPATH, "//input[@id='email']").send_keys("berk.akipek.99@gmail.com")
+driver.find_element(By.XPATH, "//input[@id='password']").send_keys("ABS2254292asd")
+driver.find_element(By.XPATH, "//div[@id='loginButton']").click()
 
-assert "Lütfen e-posta adresinizi girin." in message01
+sleep(2)
 
-# End Test
+if driver.current_url != "https://www.n11.com/":
+    print("Login Failed\n")
+
+sleep(1)
